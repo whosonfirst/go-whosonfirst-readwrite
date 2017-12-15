@@ -1,5 +1,8 @@
 package reader
 
+// maybe also make a GH API reader...
+// https://developer.github.com/v3/repos/contents/#get-contents
+
 import (
        "fmt"
 	"io"
