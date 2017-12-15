@@ -2,7 +2,7 @@ package reader
 
 import (
 	"io"
-	_ "log"		
+	_ "log"
 	"net/http"
 	"net/url"
 )
@@ -25,7 +25,7 @@ func (r *HTTPReader) Read(key string) (io.ReadCloser, error) {
 
 	url := r.root.String() + key
 	// log.Println("FETCH", url)
-	
+
 	rsp, err := http.Get(url)
 
 	if err != nil {
