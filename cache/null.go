@@ -14,7 +14,6 @@ type NullCache struct {
 func NewNullCache() (Cache, error) {
 
 	lc := NullCache{
-		Options: opts,
 		misses:  int64(0),
 	}
 
