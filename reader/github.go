@@ -4,7 +4,7 @@ package reader
 // https://developer.github.com/v3/repos/contents/#get-contents
 
 import (
-       "fmt"
+	"fmt"
 	"io"
 	_ "log"
 	"net/http"
