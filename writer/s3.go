@@ -12,7 +12,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"io"
-	"io/ioutil"
 	_ "log"
 	"os/user"
 	"path/filepath"
@@ -113,18 +112,12 @@ func NewS3Writer(s3cfg S3Config) (Writer, error) {
 
 func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
 
-	body, err := ioutil.ReadAll(fh)
-
-	if err != nil {
-		return err
-	}
-
 	key = w.prepareKey(key)
 
 	params := &s3.PutObjectInput{
 		Bucket: aws.String(w.bucket),
 		Key:    aws.String(key),
-		Body:   bytes.NewReader(body),
+		Body:   fh,
 		ACL:    aws.String("public-read"),
 	}
 
