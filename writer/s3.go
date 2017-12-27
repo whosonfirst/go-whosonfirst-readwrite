@@ -6,12 +6,14 @@ package writer
 // (20171217/thisisaaronland)
 
 import (
+       "bytes"
 	"errors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"io"
+	"io/ioutil"
 	_ "log"
 	"os/user"
 	"path/filepath"
@@ -112,12 +114,18 @@ func NewS3Writer(s3cfg S3Config) (Writer, error) {
 
 func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
 
+	body, err := ioutil.ReadAll(fh)
+
+	if err != nil {
+		return err
+	}
+
 	key = w.prepareKey(key)
 
 	params := &s3.PutObjectInput{
 		Bucket: aws.String(w.bucket),
 		Key:    aws.String(key),
-		Body:   fh,
+		Body:   bytes.NewReader(body),		// AWS needs a io.ReadSeeker and fh is a io.ReadCloser...
 		ACL:    aws.String("public-read"),
 	}
 
