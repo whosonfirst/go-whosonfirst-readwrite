@@ -119,16 +119,16 @@ func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
 		return err
 	}
 
-	key = r.prepareKey(key)
+	key = w.prepareKey(key)
 
 	params := &s3.PutObjectInput{
-		Bucket: aws.String(r.bucket),
+		Bucket: aws.String(w.bucket),
 		Key:    aws.String(key),
 		Body:   bytes.NewReader(body),
 		ACL:    aws.String("public-read"),
 	}
 
-	_, err := r.service.PutObject(params)
+	_, err = w.service.PutObject(params)
 
 	if err != nil {
 		return err
