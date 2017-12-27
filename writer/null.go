@@ -1,5 +1,9 @@
 package writer
 
+import (
+       "io"
+)
+
 type NullWriter struct {
 	Writer
 }
