@@ -5,5 +5,5 @@ import (
 )
 
 type Writer interface {
-	Write(string io.ReadCloser) error
+	Write(string, io.ReadCloser) error
 }
