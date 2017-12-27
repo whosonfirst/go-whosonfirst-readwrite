@@ -14,7 +14,7 @@ func NewNullWriter() (Writer, error) {
 	return &w, nil
 }
 
-func Write(fh io.ReadCloser) error {
+func Write(path string, fh io.ReadCloser) error {
 	// maybe drain fh here?
 	return nil
 }
