@@ -1,6 +1,6 @@
-package reader
+package writer
 
-// this is pretty much a clone of writer/s3.go and will be merged
+// this is pretty much a clone of reader/s3.go and will be merged
 // in to https://github.com/whosonfirst/go-whosonfirst-s3/
 // see also: https://github.com/thisisaaronland/go-iiif/blob/master/aws/s3.go
 // (20171217/thisisaaronland)
@@ -12,14 +12,15 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"io"
+	"io/ioutil"
 	_ "log"
 	"os/user"
 	"path/filepath"
 	"strings"
 )
 
-type S3Reader struct {
-	Reader
+type S3Writer struct {
+	Writer
 	prefix  string
 	bucket  string
 	service *s3.S3
@@ -32,7 +33,7 @@ type S3Config struct {
 	Credentials string // see notes below
 }
 
-func NewS3Reader(s3cfg S3Config) (Reader, error) {
+func NewS3Writer(s3cfg S3Config) (Writer, error) {
 
 	// https://docs.aws.amazon.com/sdk-for-go/v1/developerguide/configuring-sdk.html
 	// https://docs.aws.amazon.com/sdk-for-go/api/service/s3/
@@ -101,36 +102,42 @@ func NewS3Reader(s3cfg S3Config) (Reader, error) {
 
 	service := s3.New(sess)
 
-	r := S3Reader{
+	w := S3Writer{
 		service: service,
 		prefix:  s3cfg.Prefix,
 		bucket:  s3cfg.Bucket,
 	}
 
-	return &r, nil
+	return &w, nil
 }
 
-func (r *S3Reader) Read(key string) (io.ReadCloser, error) {
+func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
+
+	body, err := ioutil.ReadAll(fh)
+
+	if err != nil {
+		return err
+	}
 
 	key = r.prepareKey(key)
 
-	// log.Printf("FETCH s3://%s/%s\n", r.bucket, key)
-
-	params := &s3.GetObjectInput{
+	params := &s3.PutObjectInput{
 		Bucket: aws.String(r.bucket),
 		Key:    aws.String(key),
+		Body:   bytes.NewReader(body),
+		ACL:    aws.String("public-read"),
 	}
 
-	rsp, err := r.service.GetObject(params)
+	_, err := r.service.PutObject(params)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return rsp.Body, nil
+	return nil
 }
 
-func (r *S3Reader) prepareKey(key string) string {
+func (r *S3Writer) prepareKey(key string) string {
 
 	if r.prefix == "" {
 		return key
