@@ -1,6 +1,7 @@
 package writer
 
 import (
+       "bytes"
 	"io"
 	"io/ioutil"
 )
@@ -25,7 +26,7 @@ func NewMultiWriter(writers ...Writer) (Writer, error) {
 	return &w, nil
 }
 
-func (w *MultiWriter) Writer(path string, fh io.Reader) error {
+func (w *MultiWriter) Write(path string, fh io.Reader) error {
 
 	body, err := ioutil.ReadAll(fh)
 
