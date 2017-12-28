@@ -1,7 +1,7 @@
 package writer
 
 import (
-       "bytes"
+	"bytes"
 	"io"
 	"io/ioutil"
 )
@@ -26,7 +26,7 @@ func NewMultiWriter(writers ...Writer) (Writer, error) {
 	return &w, nil
 }
 
-func (w *MultiWriter) Write(path string, fh io.Reader) error {
+func (w *MultiWriter) Write(path string, fh io.ReadCloser) error {
 
 	body, err := ioutil.ReadAll(fh)
 
@@ -35,7 +35,7 @@ func (w *MultiWriter) Write(path string, fh io.Reader) error {
 	}
 
 	// please make this concurrent with a cancel context
-	
+
 	for _, wr := range w.writers {
 
 		buf := bytes.NewReader(body)
