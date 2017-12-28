@@ -6,9 +6,12 @@ package writer
 // (20171217/thisisaaronland)
 
 import (
-       "bytes"
+	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -114,6 +117,10 @@ func NewS3Writer(s3cfg S3Config) (Writer, error) {
 
 func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
 
+	// AWS needs a io.ReadSeeker and fh is a io.ReadCloser but
+	// either way we need to pass a blob of bytes to w.hasChanged
+	// below (20171227/thisisaaronland)
+
 	body, err := ioutil.ReadAll(fh)
 
 	if err != nil {
@@ -122,10 +129,20 @@ func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
 
 	key = w.prepareKey(key)
 
+	changed, err := w.hasChanged(key, body)
+
+	if err != nil {
+		return err
+	}
+
+	if !changed {
+		return nil
+	}
+
 	params := &s3.PutObjectInput{
 		Bucket: aws.String(w.bucket),
 		Key:    aws.String(key),
-		Body:   bytes.NewReader(body),		// AWS needs a io.ReadSeeker and fh is a io.ReadCloser...
+		Body:   bytes.NewReader(body),
 		ACL:    aws.String("public-read"),
 	}
 
@@ -138,11 +155,53 @@ func (w *S3Writer) Write(key string, fh io.ReadCloser) error {
 	return nil
 }
 
-func (r *S3Writer) prepareKey(key string) string {
+// how many times in how many different places have I written this code...
 
-	if r.prefix == "" {
+func (w *S3Writer) hasChanged(remote string, local []byte) (bool, error) {
+
+	// https://docs.aws.amazon.com/sdk-for-go/api/service/s3/#HeadObjectInput
+	// https://docs.aws.amazon.com/sdk-for-go/api/service/s3/#HeadObjectOutput
+
+	params := &s3.HeadObjectInput{
+		Bucket: aws.String(w.bucket),
+		Key:    aws.String(remote),
+	}
+
+	rsp, err := w.service.HeadObject(params)
+
+	if err != nil {
+
+		aws_err := err.(awserr.Error)
+
+		if aws_err.Code() == "NotFound" {
+			return true, nil
+		}
+
+		if aws_err.Code() == "SlowDown" {
+
+		}
+
+		return false, err
+	}
+
+	enc := md5.Sum(local)
+	local_hash := hex.EncodeToString(enc[:])
+
+	etag := *rsp.ETag
+	remote_hash := strings.Replace(etag, "\"", "", -1)
+
+	if local_hash == remote_hash {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (w *S3Writer) prepareKey(key string) string {
+
+	if w.prefix == "" {
 		return key
 	}
 
-	return filepath.Join(r.prefix, key)
+	return filepath.Join(w.prefix, key)
 }
