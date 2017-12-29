@@ -3,6 +3,7 @@ package cache
 import (
 	"errors"
 	"io"
+	"strings"
 )
 
 type nopCloser struct {
@@ -26,7 +27,7 @@ func NewCacheFromSource(source string, args ...interface{}) (Cache, error) {
 	var c Cache
 	var err error
 
-	switch source {
+	switch strings.ToLower(source) {
 	case "gocache":
 
 		opts, opts_err := DefaultGoCacheOptions()
@@ -36,6 +37,16 @@ func NewCacheFromSource(source string, args ...interface{}) (Cache, error) {
 		} else {
 			c, err = NewGoCache(opts)
 		}
+	case "lru":
+
+		opts, opts_err := DefaultLRUCacheOptions()
+
+		if opts_err != nil {
+			err = opts_err
+		} else {
+			c, err = NewLRUCache(opts)
+		}
+
 	case "null":
 		c, err = NewNullCache()
 	default:

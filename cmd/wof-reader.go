@@ -52,7 +52,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	cr, err := reader.NewCacheReader(r, c)
+	cr, err := utils.NewCacheReader(r, c)
 
 	if err != nil {
 		log.Fatal(err)
