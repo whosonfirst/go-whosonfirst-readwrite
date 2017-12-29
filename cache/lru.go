@@ -7,6 +7,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-readwrite/bytes"
 	"io"
 	"io/ioutil"
+	"strconv"
 	"sync/atomic"
 )
 
@@ -35,6 +36,30 @@ func DefaultLRUCacheOptions() (*LRUCacheOptions, error) {
 	}
 
 	return &opts, nil
+}
+
+func LRUCacheOptionsFromArgs(args map[string]string) (*LRUCacheOptions, error) {
+
+	opts, err := DefaultLRUCacheOptions()
+
+	if err != nil {
+		return nil, err
+	}
+
+	str_sz, ok := args["CacheSize"]
+
+	if ok {
+
+		sz, err := strconv.Atoi(str_sz)
+
+		if err != nil {
+			return nil, err
+		}
+
+		opts.CacheSize = sz
+	}
+
+	return opts, nil
 }
 
 func NewLRUCache(opts *LRUCacheOptions) (Cache, error) {

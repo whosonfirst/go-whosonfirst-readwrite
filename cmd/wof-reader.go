@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/whosonfirst/go-whosonfirst-readwrite/cache"
+	"github.com/whosonfirst/go-whosonfirst-readwrite/flags"
 	"github.com/whosonfirst/go-whosonfirst-readwrite/reader"
 	"github.com/whosonfirst/go-whosonfirst-readwrite/utils"
 	"io/ioutil"
@@ -22,6 +23,9 @@ func main() {
 	var s3_creds = flag.String("s3-credentials", "", "...")
 
 	var cache_source = flag.String("cache", "null", "...")
+
+	var cache_args flags.KeyValueArgs
+	flag.Var(&cache_args, "cache-arg", "(0) or more user-defined '{KEY}={VALUE}' arguments to pass to the caching layer")
 
 	var dump = flag.Bool("dump", false, "...")
 
@@ -46,7 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	c, err := cache.NewCacheFromSource(*cache_source)
+	c, err := cache.NewCacheFromSource(*cache_source, cache_args.ToMap())
 
 	if err != nil {
 		log.Fatal(err)
