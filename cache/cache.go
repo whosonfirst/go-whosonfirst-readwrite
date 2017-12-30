@@ -14,7 +14,6 @@ type nopCloser struct {
 func (nopCloser) Close() error { return nil }
 
 type Cache interface {
-	// GetWithReader(string, reader.Reader) (io.ReadCloser, error)
 	Get(string) (io.ReadCloser, error)
 	Set(string, io.ReadCloser) (io.ReadCloser, error)
 	Hits() int64

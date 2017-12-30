@@ -6,6 +6,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-readwrite/bytes"
 	"io"
 	"io/ioutil"
+	"strings"
 	"sync/atomic"
 )
 
@@ -40,6 +41,14 @@ func MemcacheCacheOptionsFromArgs(args map[string]string) (*MemcacheCacheOptions
 
 	if err != nil {
 		return nil, err
+	}
+
+	str_hosts, ok := args["Hosts"]
+
+	if ok {
+
+		hosts := strings.Split(str_hosts, " ")
+		opts.Hosts = hosts
 	}
 
 	return opts, nil

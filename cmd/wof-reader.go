@@ -27,7 +27,7 @@ func main() {
 	var cache_args flags.KeyValueArgs
 	flag.Var(&cache_args, "cache-arg", "(0) or more user-defined '{KEY}={VALUE}' arguments to pass to the caching layer")
 
-	var debug = flag.Bool("dump", false, "...")
+	var debug = flag.Bool("debug", false, "...")
 	var dump = flag.Bool("dump", false, "...")
 
 	flag.Parse()
