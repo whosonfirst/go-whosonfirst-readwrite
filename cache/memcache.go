@@ -1,5 +1,7 @@
 package cache
 
+// https://godoc.org/github.com/bradfitz/gomemcache/memcache
+
 import (
 	"errors"
 	"github.com/bradfitz/gomemcache/memcache"
@@ -119,6 +121,10 @@ func (c *MemcacheCache) Set(key string, fh io.ReadCloser) (io.ReadCloser, error)
 	atomic.AddInt64(&c.keys, 1)
 
 	return bytes.ReadCloserFromBytes(body)
+}
+
+func (c *MemcacheCache) Unset(key string) error {
+	return c.cache.Delete(key)
 }
 
 func (c *MemcacheCache) Size() int64 {

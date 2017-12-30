@@ -31,6 +31,7 @@ All of this package's dependencies are bundled with the code in the `vendor` dir
 type Cache interface {
 	Get(string) (io.ReadCloser, error)
 	Set(string, io.ReadCloser) (io.ReadCloser, error)
+	Unset(string) error
 	Hits() int64
 	Misses() int64
 	Evictions() int64
