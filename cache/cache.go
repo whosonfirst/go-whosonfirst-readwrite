@@ -35,6 +35,17 @@ func NewCacheFromSource(source string, args ...interface{}) (Cache, error) {
 	}
 
 	switch strings.ToLower(source) {
+
+	case "bigcache":
+
+		opts, opts_err := BigCacheCacheOptionsFromArgs(cache_args)
+
+		if opts_err != nil {
+			err = opts_err
+		} else {
+			c, err = NewBigCacheCache(opts)
+		}
+
 	case "gocache":
 
 		opts, opts_err := GoCacheOptionsFromArgs(cache_args)

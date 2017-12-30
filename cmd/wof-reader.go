@@ -73,15 +73,15 @@ func main() {
 
 	for _, path := range flag.Args() {
 
-		ok, err := utils.TestReader(cr, path)
-
-		if err != nil {
-			log.Fatal("TEST", err)
-		}
-
-		log.Println(path, ok)
+		log.Println(path)
 
 		fh, err := cr.Read(path)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		_, err = cr.Read(path)
 
 		if err != nil {
 			log.Fatal(err)
