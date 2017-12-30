@@ -107,6 +107,12 @@ func (c *MemcacheCache) Set(key string, fh io.ReadCloser) (io.ReadCloser, error)
 		return nil, err
 	}
 
+	fh, err = bytes.ReadCloserFromBytes(body)
+
+	if err != nil {
+		return nil, err
+	}
+
 	it := memcache.Item{
 		Key:   key,
 		Value: body,
@@ -115,12 +121,12 @@ func (c *MemcacheCache) Set(key string, fh io.ReadCloser) (io.ReadCloser, error)
 	err = c.cache.Set(&it)
 
 	if err != nil {
-		return nil, err
+		return fh, err
 	}
 
 	atomic.AddInt64(&c.keys, 1)
 
-	return bytes.ReadCloserFromBytes(body)
+	return fh, nil
 }
 
 func (c *MemcacheCache) Unset(key string) error {
