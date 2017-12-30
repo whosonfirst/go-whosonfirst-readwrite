@@ -162,15 +162,21 @@ func (c *BigCacheCache) Set(key string, fh io.ReadCloser) (io.ReadCloser, error)
 		return nil, err
 	}
 
-	err = c.cache.Set(key, body)
+	fh, err = bytes.ReadCloserFromBytes(body)
 
 	if err != nil {
 		return nil, err
 	}
 
+	err = c.cache.Set(key, body)
+
+	if err != nil {
+		return fh, err
+	}
+
 	atomic.AddInt64(&c.keys, 1)
 
-	return bytes.ReadCloserFromBytes(body)
+	return fh, nil
 }
 
 func (c *BigCacheCache) Unset(key string) error {
