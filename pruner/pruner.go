@@ -5,5 +5,5 @@ import (
 )
 
 type Pruner interface {
-	Pruner(string) error
+	Prune(string) error
 }

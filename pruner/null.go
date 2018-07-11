@@ -1,8 +1,6 @@
 package pruner
 
 import (
-	"github.com/whosonfirst/go-whosonfirst-readwrite/bytes"
-	"io"
 )
 
 type NullPruner struct {
@@ -11,10 +9,10 @@ type NullPruner struct {
 
 func NewNullPruner() (Pruner, error) {
 
-	r := NullPruner{}
-	return &r, nil
+	pr := NullPruner{}
+	return &pr, nil
 }
 
-func (r *NullPruner) Prune(uri string) error {
+func (pr *NullPruner) Prune(uri string) error {
      return nil
 }
