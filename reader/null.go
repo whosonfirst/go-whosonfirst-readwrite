@@ -21,5 +21,5 @@ func (r *NullReader) Read(uri string) (io.ReadCloser, error) {
 }
 
 func (r *NullReader) URI(uri string) string {
-     return uri
+	return uri
 }

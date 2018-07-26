@@ -41,7 +41,7 @@ vendor-deps: rmdeps deps
 fmt:
 	go fmt bytes/*.go
 	go fmt cache/*.go
-	go fmt cmd/*.go
+	# go fmt cmd/*.go
 	go fmt flags/*.go
 	go fmt http/*.go
 	go fmt pruner/*.go
