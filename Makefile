@@ -8,7 +8,6 @@ self:   prep rmdeps
 	if test -d src; then rm -rf src; fi
 	mkdir -p src/github.com/whosonfirst/go-whosonfirst-readwrite
 	cp -r bytes src/github.com/whosonfirst/go-whosonfirst-readwrite/
-	cp -r cache src/github.com/whosonfirst/go-whosonfirst-readwrite/
 	cp -r flags src/github.com/whosonfirst/go-whosonfirst-readwrite/
 	cp -r http src/github.com/whosonfirst/go-whosonfirst-readwrite/
 	cp -r pruner src/github.com/whosonfirst/go-whosonfirst-readwrite/
@@ -26,10 +25,7 @@ docker-build:
 	docker build -t wof-readwrited .
 
 deps:
-	@GOPATH=$(GOPATH) go get -u "github.com/allegro/bigcache"
-	@GOPATH=$(GOPATH) go get -u "github.com/bradfitz/gomemcache/memcache"
-	@GOPATH=$(GOPATH) go get -u "github.com/hashicorp/golang-lru"
-	@GOPATH=$(GOPATH) go get -u "github.com/patrickmn/go-cache"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-cache"
 
 vendor-deps: rmdeps deps
 	if test ! -d vendor; then mkdir vendor; fi

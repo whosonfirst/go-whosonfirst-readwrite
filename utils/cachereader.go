@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/whosonfirst/go-whosonfirst-readwrite/cache"
+	"github.com/whosonfirst/go-whosonfirst-cache"
 	"github.com/whosonfirst/go-whosonfirst-readwrite/reader"
 	"io"
 	"log"
