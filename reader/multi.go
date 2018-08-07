@@ -35,7 +35,7 @@ func NewMultiReaderFromStrings(dsn_strings ...string) (Reader, error) {
 		readers = append(readers, r)
 	}
 
-	return NewMultiReader(readers)
+	return NewMultiReader(readers...)
 }
 
 func NewMultiReader(readers ...Reader) (Reader, error) {
