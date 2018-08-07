@@ -25,7 +25,9 @@ docker-build:
 
 deps:
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-cache"
-	# @GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-cli"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-cli"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-uri"       
+	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/atomicfile"
 
 vendor-deps: rmdeps deps
 	if test ! -d vendor; then mkdir vendor; fi
@@ -44,4 +46,5 @@ fmt:
 	go fmt writer/*.go
 
 bin: 	self
-	# @GOPATH=$(GOPATH) go build -o bin/wof-reader cmd/wof-reader.go
+	rm -rf bin/*
+	@GOPATH=$(GOPATH) go build -o bin/wof-fs-reader cmd/wof-fs-reader.go
