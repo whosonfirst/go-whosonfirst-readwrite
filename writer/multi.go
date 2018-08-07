@@ -1,7 +1,7 @@
 package writer
 
 import (
-	"github.com/whosonfirst/go-whosonfirst-readwrite/bytes"
+	"github.com/whosonfirst/go-whosonfirst-readwrite/utils"
 	"io"
 )
 
@@ -31,7 +31,11 @@ func (w *MultiWriter) Write(path string, fh io.ReadCloser) error {
 
 	for _, wr := range w.writers {
 
-		reader := bytes.ReadCloserFromBytes(body)
+		reader, err := utils.ReadCloserFromBytes(body)
+
+		if err != nil {
+			return err
+		}
 
 		err = wr.Write(path, reader)
 
