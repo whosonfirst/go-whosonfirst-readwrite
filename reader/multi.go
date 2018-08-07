@@ -22,7 +22,7 @@ type MultiReader struct {
 
 func NewMultiReaderFromStrings(dsn_strings ...string) (Reader, error) {
 
-	readers := make([]reader.Reader, 0)
+	readers := make([]Reader, 0)
 
 	for _, dsn := range dsn_strings {
 
