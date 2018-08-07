@@ -3,6 +3,7 @@ package writer
 import (
 	"github.com/whosonfirst/go-whosonfirst-readwrite/utils"
 	"io"
+	"io/ioutil"
 )
 
 type MultiWriter struct {
