@@ -94,6 +94,6 @@ func (mr *MultiReader) URI(uri string) string {
 	}
 
 	// should we actually to find (read) the uri in question?
-	
+
 	return fmt.Sprintf("x-urn:go-whosonfirst-readwrite:reader:multi#%s", uri)
 }

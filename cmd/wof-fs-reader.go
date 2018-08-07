@@ -16,6 +16,7 @@ func main() {
 	var roots flags.MultiString
 
 	flag.Var(&roots, "root", "...")
+	debug := flag.Bool("debug", false, "...")
 
 	flag.Parse()
 
@@ -54,8 +55,15 @@ func main() {
 
 		fh, err := mr.Read(rel_path)
 
-		if err == nil {
-			fh, err = mr.Read(rel_path)
+		if *debug {
+		
+			if err == nil {
+				fh, err = mr.Read(rel_path)
+			}
+		}
+
+		if err != nil {
+			log.Fatal(err)
 		}
 
 		io.Copy(os.Stdout, fh)
