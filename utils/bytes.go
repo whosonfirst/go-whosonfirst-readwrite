@@ -1,12 +1,12 @@
-package bytes
+package utils
 
 import (
-	gobytes "bytes"
+	"bytes"
 	"io"
 	"io/ioutil"
 )
 
 func ReadCloserFromBytes(b []byte) (io.ReadCloser, error) {
-	body := gobytes.NewReader(b)
+	body := bytes.NewReader(b)
 	return ioutil.NopCloser(body), nil
 }

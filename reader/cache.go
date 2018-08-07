@@ -1,15 +1,14 @@
-package utils
+package reader
 
 import (
 	"github.com/whosonfirst/go-whosonfirst-cache"
-	"github.com/whosonfirst/go-whosonfirst-readwrite/reader"
 	"io"
 	"log"
 )
 
 type CacheReader struct {
-	reader.Reader
-	reader  reader.Reader
+	Reader
+	reader  Reader
 	cache   cache.Cache
 	options *CacheReaderOptions
 }
@@ -29,7 +28,7 @@ func NewDefaultCacheReaderOptions() (*CacheReaderOptions, error) {
 	return &opts, nil
 }
 
-func NewCacheReader(r reader.Reader, c cache.Cache, opts *CacheReaderOptions) (reader.Reader, error) {
+func NewCacheReader(r Reader, c cache.Cache, opts *CacheReaderOptions) (Reader, error) {
 
 	cr := CacheReader{
 		reader:  r,

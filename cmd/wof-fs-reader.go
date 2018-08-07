@@ -56,7 +56,7 @@ func main() {
 		fh, err := mr.Read(rel_path)
 
 		if *debug {
-		
+
 			if err == nil {
 				fh, err = mr.Read(rel_path)
 			}

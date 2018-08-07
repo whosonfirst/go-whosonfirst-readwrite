@@ -7,7 +7,6 @@ prep:
 self:   prep rmdeps
 	if test -d src; then rm -rf src; fi
 	mkdir -p src/github.com/whosonfirst/go-whosonfirst-readwrite
-	cp -r bytes src/github.com/whosonfirst/go-whosonfirst-readwrite/
 	cp -r http src/github.com/whosonfirst/go-whosonfirst-readwrite/
 	cp -r pruner src/github.com/whosonfirst/go-whosonfirst-readwrite/
 	cp -r reader src/github.com/whosonfirst/go-whosonfirst-readwrite/
@@ -37,8 +36,7 @@ vendor-deps: rmdeps deps
 	rm -rf src
 
 fmt:
-	go fmt bytes/*.go
-	# go fmt cmd/*.go
+	go fmt cmd/*.go
 	go fmt http/*.go
 	go fmt pruner/*.go
 	go fmt reader/*.go
