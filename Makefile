@@ -26,6 +26,9 @@ docker-build:
 	docker build -t wof-readwrited .
 
 deps:
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-cli"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-uri"       
+	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/atomicfile"
 	@GOPATH=$(GOPATH) go get -u "github.com/allegro/bigcache"
 	@GOPATH=$(GOPATH) go get -u "github.com/bradfitz/gomemcache/memcache"
 	@GOPATH=$(GOPATH) go get -u "github.com/hashicorp/golang-lru"
@@ -41,7 +44,7 @@ vendor-deps: rmdeps deps
 fmt:
 	go fmt bytes/*.go
 	go fmt cache/*.go
-	# go fmt cmd/*.go
+	go fmt cmd/*.go
 	go fmt flags/*.go
 	go fmt http/*.go
 	go fmt pruner/*.go
@@ -50,4 +53,5 @@ fmt:
 	go fmt writer/*.go
 
 bin: 	self
-	# @GOPATH=$(GOPATH) go build -o bin/wof-reader cmd/wof-reader.go
+	rm -rf bin/*
+	@GOPATH=$(GOPATH) go build -o bin/wof-fs-reader cmd/wof-fs-reader.go

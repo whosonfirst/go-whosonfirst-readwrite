@@ -2,17 +2,29 @@ package reader
 
 import (
 	"errors"
+	"fmt"
+	"io"
+	_ "log"
+	"sync"
 )
 
 type MultiReader struct {
 	Reader
 	readers []Reader
+	lookup  map[string]int
+	mu      *sync.RWMutex
 }
 
 func NewMultiReader(readers ...Reader) (Reader, error) {
 
+	lookup := make(map[string]int)
+
+	mu := new(sync.RWMutex)
+
 	mr := MultiReader{
-		reader: readers,
+		readers: readers,
+		lookup:  lookup,
+		mu:      mu,
 	}
 
 	return &mr, nil
@@ -20,20 +32,68 @@ func NewMultiReader(readers ...Reader) (Reader, error) {
 
 func (mr *MultiReader) Read(uri string) (io.ReadCloser, error) {
 
-	for _, r := range mr.readers {
+	missing := errors.New("Unable to read URI")
 
-		fh, err := r.Read(uri)
+	mr.mu.RLock()
 
-		if err != nil {
-			continue
+	idx, ok := mr.lookup[uri]
+
+	mr.mu.RUnlock()
+
+	if ok {
+
+		// log.Printf("READ MULTIREADER LOOKUP INDEX FOR %s AS %d\n", uri, idx)
+
+		if idx == -1 {
+			return nil, missing
 		}
 
-		return fh, nil
+		r := mr.readers[idx]
+		return r.Read(uri)
 	}
 
-	return nil, errors.New("Unable to read URI")
+	var fh io.ReadCloser
+	idx = -1
+
+	for i, r := range mr.readers {
+
+		rsp, err := r.Read(uri)
+
+		if err == nil {
+
+			fh = rsp
+			idx = i
+
+			break
+		}
+	}
+
+	// log.Printf("SET MULTIREADER LOOKUP INDEX FOR %s AS %d\n", uri, idx)
+
+	mr.mu.Lock()
+	mr.lookup[uri] = idx
+	mr.mu.Unlock()
+
+	if fh == nil {
+		return nil, missing
+	}
+
+	return fh, nil
 }
 
-func (r *MultiReader) URI(uri string) string {
-	return uri
+func (mr *MultiReader) URI(uri string) string {
+
+	mr.mu.RLock()
+
+	idx, ok := mr.lookup[uri]
+
+	mr.mu.RUnlock()
+
+	if ok {
+		return mr.readers[idx].URI(uri)
+	}
+
+	// should we actually to find (read) the uri in question?
+	
+	return fmt.Sprintf("x-urn:go-whosonfirst-readwrite:reader:multi#%s", uri)
 }
