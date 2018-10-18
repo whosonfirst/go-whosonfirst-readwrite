@@ -49,7 +49,7 @@ func (w *MultiWriter) Write(path string, fh io.ReadCloser) error {
 	return nil
 }
 
-func (w *MultiWriter) URI(path) string {
+func (w *MultiWriter) URI(path string) string {
 
 	uris := make([]string, len(w.writers))
 
