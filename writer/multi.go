@@ -54,7 +54,7 @@ func (w *MultiWriter) URI(path) string {
 	uris := make([]string, len(w.writers))
 
 	for i, wr := range w.writers {
-		uris[i] = wr.URI()
+		uris[i] = wr.URI(path)
 	}
 
 	return strings.Join(uris, " ")
