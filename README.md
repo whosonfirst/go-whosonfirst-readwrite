@@ -4,10 +4,7 @@ Go package for reading and writing Who's On First documents from a variety of so
 
 ## Important
 
-Two things:
-
-1. It's probably too soon, for you. If nothing else the documentation is incomplete
-2. While it is tempting to imagine that this could be used as a general purpose abstraction layer for reading and writing a variety of documents this is probably premature and likely incorrect. This is really about WOF documents. Once we get _that_ working we'll think about how this code applies more generally.
+This package is officially deprecated and has been superseded by the [go-reader-*](https://github.com/whosonfirst?utf8=%E2%9C%93&q=go-reader&type=&language=) and [go-writer-*](https://github.com/whosonfirst?utf8=%E2%9C%93&q=go-writer&type=&language=) packages, as well as [go-whosonfirst-reader](https://github.com/whosonfirst/go-whosonfirst-reader) and [go-whosonfirst-writer](https://github.com/whosonfirst/go-whosonfirst-writer). In time this repository will be archived.
 
 ## Install
 
